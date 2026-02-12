@@ -1,0 +1,13 @@
+# MCP GitLab Server Dependencies
+# Python 3.11+
+
+# Core MCP
+mcp>=0.9.0
+fastmcp>=0.2.0
+
+# GitLab Integration
+python-gitlab>=4.4.0
+requests>=2.31.0
+
+# Utilities
+python-dotenv>=1.0.0

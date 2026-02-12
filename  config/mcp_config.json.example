@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "gitlab-mybiat": {
+      "command": "python",
+      "args": [
+        "/chemin/absolu/vers/mcp_gitlab_server.py"
+      ],
+      "env": {
+        "GITLAB_URL": "https://gitlab.com",
+        "GITLAB_TOKEN": "votre-token-gitlab",
+        "GITLAB_PROJECT_ID": "12345"
+      },
+      "description": "MCP Server pour analyser les MRs et détecter les changements UI dans MyBiat"
+    }
+  }
+}
