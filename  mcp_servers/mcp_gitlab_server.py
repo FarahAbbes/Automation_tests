@@ -1,14 +1,50 @@
 """
 MCP GitLab Server for MyBiat Test Automation
 Expose GitLab context (MRs, diffs, XML files) to AI agents via MCP Protocol
-VERSION CORRIGÉE - Gère correctement les attributs des MRs
+VERSION AVEC CHARGEMENT AUTOMATIQUE DU .ENV
 """
 
 import os
 import re
 from typing import Any, Optional
+from pathlib import Path
 import gitlab
 from mcp.server.fastmcp import FastMCP
+
+# ============================================================================
+# CHARGEMENT AUTOMATIQUE DU FICHIER .ENV
+# ============================================================================
+try:
+    from dotenv import load_dotenv
+
+    # Déterminer le chemin du fichier .env
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent  # Remonte de mcp_servers/ vers la racine
+    env_path = project_root / "config" / ".env"
+
+    # Charger le .env si disponible
+    if env_path.exists():
+        load_dotenv(env_path)
+        print(f" Variables d'environnement chargées depuis: {env_path}")
+    else:
+        # Essayer aussi à la racine du projet
+        env_root = project_root / ".env"
+        if env_root.exists():
+            load_dotenv(env_root)
+            print(f" Variables d'environnement chargées depuis: {env_root}")
+        else:
+            print(f" Aucun fichier .env trouvé")
+            print(f"   Recherché dans: {env_path}")
+            print(f"   Recherché dans: {env_root}")
+            load_dotenv()  # Essayer de charger depuis le répertoire courant
+
+except ImportError:
+    print(" Module 'python-dotenv' non installé")
+    print("   Installez-le avec: pip install python-dotenv")
+
+# ============================================================================
+# CONFIGURATION GITLAB
+# ============================================================================
 
 # Initialize FastMCP server
 mcp = FastMCP("GitLab Context Server")
@@ -18,9 +54,22 @@ GITLAB_URL = os.getenv("GITLAB_URL", "https://gitlab.com")
 GITLAB_TOKEN = os.getenv("GITLAB_TOKEN")
 PROJECT_ID = os.getenv("GITLAB_PROJECT_ID")
 
+# Vérification au démarrage
+if not GITLAB_TOKEN:
+    print(" GITLAB_TOKEN n'est pas configuré!")
+    print("   Vérifiez votre fichier .env dans config/.env")
+
+if not PROJECT_ID:
+    print(" GITLAB_PROJECT_ID n'est pas configuré!")
+    print("   Vérifiez votre fichier .env dans config/.env")
+
 # Initialize GitLab client
 gl = gitlab.Gitlab(GITLAB_URL, private_token=GITLAB_TOKEN)
 
+
+# ============================================================================
+# OUTILS MCP
+# ============================================================================
 
 @mcp.tool()
 def get_merge_requests(state: str = "opened", max_results: int = 10) -> dict[str, Any]:
@@ -55,7 +104,7 @@ def get_merge_requests(state: str = "opened", max_results: int = 10) -> dict[str
                 "updated_at": mr_full.updated_at,
                 "web_url": mr_full.web_url,
                 "has_conflicts": mr_full.has_conflicts,
-                "changes_count": getattr(mr_full, 'changes_count', 'N/A')  # Utiliser getattr pour éviter l'erreur
+                "changes_count": getattr(mr_full, 'changes_count', 'N/A')
             })
 
         return {
@@ -298,12 +347,12 @@ def _generate_test_recommendation(ui_changes: dict) -> str:
 
     if ui_changes["modified_ui_elements"]:
         recommendations.append(
-            f"⚠ {len(ui_changes['modified_ui_elements'])} éléments modifiés → Vérifier les tests existants"
+            f" {len(ui_changes['modified_ui_elements'])} éléments modifiés → Vérifier les tests existants"
         )
 
     if ui_changes["activities_changed"]:
         recommendations.append(
-            f"📱 {len(ui_changes['activities_changed'])} écrans modifiés → Vérifier les Page Objects"
+            f" {len(ui_changes['activities_changed'])} écrans modifiés → Vérifier les Page Objects"
         )
 
     if not recommendations:
@@ -395,21 +444,32 @@ def search_locator_in_tests(locator_id: str) -> dict[str, Any]:
         }
 
 
+# ============================================================================
+# POINT D'ENTRÉE
+# ============================================================================
+
 if __name__ == "__main__":
-    # Vérifier que les variables d'environnement sont configurées
-    if not GITLAB_TOKEN:
-        print("❌ GITLAB_TOKEN n'est pas configuré!")
-        print("Exportez votre token: export GITLAB_TOKEN='your-token'")
+    # Afficher le statut de la configuration
+    print("\n" + "="*60)
+    print("MCP GITLAB SERVER - DÉMARRAGE")
+    print("="*60)
+
+    if GITLAB_TOKEN and PROJECT_ID:
+        print(f"✅ Configuration OK")
+        print(f"   URL: {GITLAB_URL}")
+        print(f"   Projet: {PROJECT_ID}")
+        print(f"   Token: {GITLAB_TOKEN[:15]}...{GITLAB_TOKEN[-4:]}")
+        print("\n🚀 Serveur MCP prêt!")
+        print("="*60 + "\n")
+
+        # Démarrer le serveur MCP
+        mcp.run()
+    else:
+        print("\n❌ CONFIGURATION INCOMPLÈTE")
+        if not GITLAB_TOKEN:
+            print("   • GITLAB_TOKEN manquant")
+        if not PROJECT_ID:
+            print("   • GITLAB_PROJECT_ID manquant")
+        print("\n💡 Vérifiez votre fichier .env dans config/.env")
+        print("="*60 + "\n")
         exit(1)
-
-    if not PROJECT_ID:
-        print("❌ GITLAB_PROJECT_ID n'est pas configuré!")
-        print("Exportez l'ID du projet: export GITLAB_PROJECT_ID='12345'")
-        exit(1)
-
-    print("✅ MCP GitLab Server démarré")
-    print(f"📊 Projet: {PROJECT_ID}")
-    print(f"🔗 URL: {GITLAB_URL}")
-
-    # Démarrer le serveur MCP
-    mcp.run()

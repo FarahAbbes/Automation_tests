@@ -1,0 +1,12 @@
+# AI UI Inspector — Dependencies
+# pip install -r requirements_ai_inspector.txt
+
+# Appium
+Appium-Python-Client>=3.0.0
+selenium>=4.0.0
+
+# Gemini AI
+google-generativeai>=0.7.0
+
+# Env & utils
+python-dotenv>=1.0.0

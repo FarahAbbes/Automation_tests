@@ -1,0 +1,195 @@
+{
+  "timestamp": "2026-02-17T18:30:57.972245",
+  "page_source": "<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\r\n<hierarchy index=\"0\" class=\"hierarchy\" rotation=\"0\" width=\"1080\" height=\"2167\">\r\n  <android.widget.FrameLayout index=\"0\" package=\"com.example.mobile_app\" class=\"android.widget.FrameLayout\" text=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2400]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n    <android.widget.LinearLayout index=\"0\" package=\"com.example.mobile_app\" class=\"android.widget.LinearLayout\" text=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2270]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"1\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n      <android.widget.FrameLayout index=\"0\" package=\"com.example.mobile_app\" class=\"android.widget.FrameLayout\" text=\"\" resource-id=\"android:id/content\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2270]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"2\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n        <android.widget.FrameLayout index=\"0\" package=\"com.example.mobile_app\" class=\"android.widget.FrameLayout\" text=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2270]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"1\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n          <android.widget.FrameLayout index=\"0\" package=\"com.example.mobile_app\" class=\"android.widget.FrameLayout\" text=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2270]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"1\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" pane-title=\" \" window-id=\"1363\">\r\n            <android.view.View index=\"0\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2270]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n              <android.view.View index=\"0\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2270]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n                <android.view.View index=\"0\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2270]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n                  <android.view.View index=\"0\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,2270]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n                    <android.view.View index=\"0\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,0][1080,323]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n                      <android.view.View index=\"0\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,103][154,323]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                    </android.view.View>\r\n                    <android.view.View index=\"1\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,323][1080,1968]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n                      <android.view.View index=\"0\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" content-desc=\"Welcome Back\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[168,653][912,788]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                      <android.view.View index=\"1\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" content-desc=\"Sign in to continue\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[325,810][755,873]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                      <android.view.View index=\"2\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" content-desc=\"Email Address\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[66,983][354,1038]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                      <android.widget.EditText index=\"3\" package=\"com.example.mobile_app\" class=\"android.widget.EditText\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[66,1060][1014,1214]\" displayed=\"true\" hint=\"example@email.com\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                      <android.view.View index=\"4\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" content-desc=\"Password\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[66,1269][260,1324]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                      <android.widget.EditText index=\"5\" package=\"com.example.mobile_app\" class=\"android.widget.EditText\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"true\" scrollable=\"false\" selected=\"false\" bounds=\"[66,1346][1014,1500]\" displayed=\"true\" hint=\"••••••••\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n                        <android.widget.Button index=\"0\" package=\"com.example.mobile_app\" class=\"android.widget.Button\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[882,1357][1014,1489]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                      </android.widget.EditText>\r\n                      <android.widget.Button index=\"6\" package=\"com.example.mobile_app\" class=\"android.widget.Button\" text=\"\" content-desc=\"Forgot Password?\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[603,1528][1014,1660]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                      <android.widget.Button index=\"7\" package=\"com.example.mobile_app\" class=\"android.widget.Button\" text=\"\" content-desc=\"Sign In\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[66,1770][1014,1924]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                    </android.view.View>\r\n                    <android.view.View index=\"2\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[0,2157][1080,2204]\" displayed=\"true\" a11y-important=\"false\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\">\r\n                      <android.view.View index=\"0\" package=\"com.example.mobile_app\" class=\"android.view.View\" text=\"\" content-desc=\"New User? \" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[264,2146][509,2218]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                      <android.widget.Button index=\"1\" package=\"com.example.mobile_app\" class=\"android.widget.Button\" text=\"\" content-desc=\"Create Account\" resource-id=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" long-clickable=\"false\" password=\"false\" scrollable=\"false\" selected=\"false\" bounds=\"[484,2146][814,2218]\" displayed=\"true\" a11y-important=\"true\" screen-reader-focusable=\"false\" drawing-order=\"0\" showing-hint=\"false\" text-entry-key=\"false\" dismissable=\"false\" a11y-focused=\"false\" heading=\"false\" live-region=\"0\" context-clickable=\"false\" content-invalid=\"false\" window-id=\"1363\" />\r\n                    </android.view.View>\r\n                  </android.view.View>\r\n                </android.view.View>\r\n              </android.view.View>\r\n            </android.view.View>\r\n          </android.widget.FrameLayout>\r\n        </android.widget.FrameLayout>\r\n      </android.widget.FrameLayout>\r\n    </android.widget.LinearLayout>\r\n  </android.widget.FrameLayout>\r\n</hierarchy>",
+  "elements": [
+    {
+      "type": "element",
+      "class": "FrameLayout",
+      "resource_id": "android:id/content",
+      "short_id": "content",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[0,0][1080,2270]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id:android:id/content",
+        "robot_id": "id=android:id/content"
+      }
+    },
+    {
+      "type": "clickable_element",
+      "class": "View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[0,103][154,323]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {}
+    },
+    {
+      "type": "element",
+      "class": "View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Welcome Back",
+      "bounds": "[168,653][912,788]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_desc": "accessibility id=Welcome Back"
+      }
+    },
+    {
+      "type": "element",
+      "class": "View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Sign in to continue",
+      "bounds": "[325,810][755,873]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_desc": "accessibility id=Sign in to continue"
+      }
+    },
+    {
+      "type": "element",
+      "class": "View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Email Address",
+      "bounds": "[66,983][354,1038]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_desc": "accessibility id=Email Address"
+      }
+    },
+    {
+      "type": "input_field",
+      "class": "EditText",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[66,1060][1014,1214]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {}
+    },
+    {
+      "type": "element",
+      "class": "View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Password",
+      "bounds": "[66,1269][260,1324]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_desc": "accessibility id=Password"
+      }
+    },
+    {
+      "type": "input_field",
+      "class": "EditText",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[66,1346][1014,1500]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {}
+    },
+    {
+      "type": "button",
+      "class": "Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[882,1357][1014,1489]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 12,
+      "locators": {}
+    },
+    {
+      "type": "forgot_password_link",
+      "class": "Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Forgot Password?",
+      "bounds": "[603,1528][1014,1660]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_desc": "accessibility id=Forgot Password?"
+      }
+    },
+    {
+      "type": "button",
+      "class": "Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Sign In",
+      "bounds": "[66,1770][1014,1924]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_desc": "accessibility id=Sign In"
+      }
+    },
+    {
+      "type": "element",
+      "class": "View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "New User? ",
+      "bounds": "[264,2146][509,2218]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_desc": "accessibility id=New User? "
+      }
+    },
+    {
+      "type": "button",
+      "class": "Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Create Account",
+      "bounds": "[484,2146][814,2218]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_desc": "accessibility id=Create Account"
+      }
+    }
+  ],
+  "page_name": "login"
+}
