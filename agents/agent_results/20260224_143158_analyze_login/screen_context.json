@@ -1,0 +1,83 @@
+{
+  "success": true,
+  "simulation": true,
+  "page_name": "login",
+  "app_package": "com.example.mobile_app",
+  "total_elements": 6,
+  "interactive_elements": 5,
+  "interactive_summary": [
+    {
+      "type": "username_field",
+      "short_id": "edit_username",
+      "resource_id": "com.example.mobile_app:id/edit_username",
+      "text": "",
+      "content_desc": "Champ identifiant",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/edit_username",
+        "by_accessibility": "accessibility id=Champ identifiant"
+      }
+    },
+    {
+      "type": "password_field",
+      "short_id": "edit_password",
+      "resource_id": "com.example.mobile_app:id/edit_password",
+      "text": "",
+      "content_desc": "Champ mot de passe",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/edit_password",
+        "by_accessibility": "accessibility id=Champ mot de passe"
+      }
+    },
+    {
+      "type": "login_button",
+      "short_id": "btn_login",
+      "resource_id": "com.example.mobile_app:id/btn_login",
+      "text": "Se connecter",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/btn_login",
+        "by_text": "xpath=//*[@text='Se connecter']"
+      }
+    },
+    {
+      "type": "checkbox",
+      "short_id": "cb_remember_me",
+      "resource_id": "com.example.mobile_app:id/cb_remember_me",
+      "text": "Se souvenir de moi",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/cb_remember_me",
+        "by_text": "xpath=//*[@text='Se souvenir de moi']"
+      }
+    },
+    {
+      "type": "forgot_password_link",
+      "short_id": "tv_forgot_password",
+      "resource_id": "com.example.mobile_app:id/tv_forgot_password",
+      "text": "Mot de passe oublié ?",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/tv_forgot_password",
+        "by_text": "xpath=//*[@text='Mot de passe oublié ?']"
+      }
+    }
+  ],
+  "locator_stats": {
+    "robust": 5,
+    "fragile": 0,
+    "missing": 1,
+    "coverage_percent": 83.3
+  },
+  "fragile_locators": [],
+  "missing_locators": []
+}
