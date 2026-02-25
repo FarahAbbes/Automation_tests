@@ -1,0 +1,536 @@
+{
+  "success": true,
+  "simulation": false,
+  "page_name": "menu",
+  "app_package": "com.example.mobile_app",
+  "app_activity": ".MainActivity",
+  "total_elements": 18,
+  "interactive_elements": 15,
+  "elements": [
+    {
+      "type": "element",
+      "class": "android.widget.FrameLayout",
+      "resource_id": "android:id/content",
+      "short_id": "content",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[0,0][1080,2270]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id=android:id/content",
+        "appium_id": "id:android:id/content"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "clickable_element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[41,144][151,254]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 13,
+      "locators": {},
+      "locator_quality": "missing"
+    },
+    {
+      "type": "clickable_element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[929,144][1039,254]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 13,
+      "locators": {},
+      "locator_quality": "missing"
+    },
+    {
+      "type": "input_field",
+      "class": "android.widget.EditText",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[0,296][1080,488]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 12,
+      "locators": {
+        "by_xpath": "xpath=//android.widget.EditText"
+      },
+      "locator_quality": "fragile"
+    },
+    {
+      "type": "element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Categories",
+      "bounds": "[0,488][1080,623]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 12,
+      "locators": {
+        "by_accessibility": "accessibility id=Categories"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "image",
+      "class": "android.widget.ImageView",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "All",
+      "bounds": "[14,664][250,956]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 14,
+      "locators": {
+        "by_accessibility": "accessibility id=All"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "image",
+      "class": "android.widget.ImageView",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Pasta",
+      "bounds": "[278,664][514,956]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 14,
+      "locators": {
+        "by_accessibility": "accessibility id=Pasta"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "image",
+      "class": "android.widget.ImageView",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "sandwich",
+      "bounds": "[542,664][778,956]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 14,
+      "locators": {
+        "by_accessibility": "accessibility id=sandwich"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "image",
+      "class": "android.widget.ImageView",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "pizza",
+      "bounds": "[806,664][1042,956]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 14,
+      "locators": {
+        "by_accessibility": "accessibility id=pizza"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "clickable_element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "tacos\ntacos chaneb\n4.5\n10.0 DT",
+      "bounds": "[63,1052][1017,1409]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 14,
+      "locators": {
+        "by_accessibility": "accessibility id=tacos\ntacos chaneb\n4.5\n10.0 DT"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "button",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[885,1277][1017,1409]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 15,
+      "locators": {
+        "by_xpath": "xpath=//android.widget.Button"
+      },
+      "locator_quality": "fragile"
+    },
+    {
+      "type": "clickable_element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "pasta\npastacosi\n4.5\n10.0 DT",
+      "bounds": "[63,1519][1017,1877]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 14,
+      "locators": {
+        "by_accessibility": "accessibility id=pasta\npastacosi\n4.5\n10.0 DT"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "button",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[885,1745][1017,1877]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 15,
+      "locators": {
+        "by_xpath": "xpath=//android.widget.Button"
+      },
+      "locator_quality": "fragile"
+    },
+    {
+      "type": "clickable_element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "neptune\npizza\n4.5\n10.0 DT",
+      "bounds": "[63,1987][1017,2111]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 14,
+      "locators": {
+        "by_accessibility": "accessibility id=neptune\npizza\n4.5\n10.0 DT"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "button",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "0",
+      "bounds": "[882,1913][1036,2067]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 10,
+      "locators": {
+        "by_accessibility": "accessibility id=0"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "button",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Menu\nTab 1 of 2",
+      "bounds": "[0,2111][540,2270]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Menu\nTab 1 of 2"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "login_button",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Login\nTab 2 of 2",
+      "bounds": "[540,2111][1080,2270]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Login\nTab 2 of 2"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "element",
+      "class": "android.widget.Toast",
+      "resource_id": "",
+      "short_id": "",
+      "text": "Anwer : Mrawha enti ?",
+      "content_desc": "",
+      "bounds": "",
+      "clickable": false,
+      "enabled": true,
+      "depth": 1,
+      "locators": {
+        "by_text": "xpath=//*[@text='Anwer : Mrawha enti ?']",
+        "by_text_contains": "xpath=//*[contains(@text,'Anwer : Mrawha enti ')]",
+        "by_class_text": "xpath=//Toast[@text='Anwer : Mrawha enti ?']"
+      },
+      "locator_quality": "fragile"
+    }
+  ],
+  "interactive_summary": [
+    {
+      "type": "clickable_element",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {}
+    },
+    {
+      "type": "clickable_element",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {}
+    },
+    {
+      "type": "input_field",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "fragile",
+      "locators": {
+        "by_xpath": "xpath=//android.widget.EditText"
+      }
+    },
+    {
+      "type": "image",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "All",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=All"
+      }
+    },
+    {
+      "type": "image",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "Pasta",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=Pasta"
+      }
+    },
+    {
+      "type": "image",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "sandwich",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=sandwich"
+      }
+    },
+    {
+      "type": "image",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "pizza",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=pizza"
+      }
+    },
+    {
+      "type": "clickable_element",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "tacos\ntacos chaneb\n4.5\n10.0 DT",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=tacos\ntacos chaneb\n4.5\n10.0 DT"
+      }
+    },
+    {
+      "type": "button",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "fragile",
+      "locators": {
+        "by_xpath": "xpath=//android.widget.Button"
+      }
+    },
+    {
+      "type": "clickable_element",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "pasta\npastacosi\n4.5\n10.0 DT",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=pasta\npastacosi\n4.5\n10.0 DT"
+      }
+    },
+    {
+      "type": "button",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "fragile",
+      "locators": {
+        "by_xpath": "xpath=//android.widget.Button"
+      }
+    },
+    {
+      "type": "clickable_element",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "neptune\npizza\n4.5\n10.0 DT",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=neptune\npizza\n4.5\n10.0 DT"
+      }
+    },
+    {
+      "type": "button",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "0",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=0"
+      }
+    },
+    {
+      "type": "button",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "Menu\nTab 1 of 2",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=Menu\nTab 1 of 2"
+      }
+    },
+    {
+      "type": "login_button",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "Login\nTab 2 of 2",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_accessibility": "accessibility id=Login\nTab 2 of 2"
+      }
+    }
+  ],
+  "locator_stats": {
+    "robust": 12,
+    "fragile": 4,
+    "missing": 2,
+    "coverage_percent": 88.9
+  },
+  "fragile_locators": [
+    {
+      "short_id": "",
+      "type": "input_field",
+      "text": "",
+      "locators": {
+        "by_xpath": "xpath=//android.widget.EditText"
+      },
+      "reason": "Basé sur le texte visible — sensible aux traductions"
+    },
+    {
+      "short_id": "",
+      "type": "button",
+      "text": "",
+      "locators": {
+        "by_xpath": "xpath=//android.widget.Button"
+      },
+      "reason": "Basé sur le texte visible — sensible aux traductions"
+    },
+    {
+      "short_id": "",
+      "type": "button",
+      "text": "",
+      "locators": {
+        "by_xpath": "xpath=//android.widget.Button"
+      },
+      "reason": "Basé sur le texte visible — sensible aux traductions"
+    },
+    {
+      "short_id": "",
+      "type": "element",
+      "text": "Anwer : Mrawha enti ?",
+      "locators": {
+        "by_text": "xpath=//*[@text='Anwer : Mrawha enti ?']",
+        "by_text_contains": "xpath=//*[contains(@text,'Anwer : Mrawha enti ')]",
+        "by_class_text": "xpath=//Toast[@text='Anwer : Mrawha enti ?']"
+      },
+      "reason": "Basé sur le texte visible — sensible aux traductions"
+    }
+  ],
+  "missing_locators": [
+    {
+      "class": "android.view.View",
+      "bounds": "[41,144][151,254]",
+      "type": "clickable_element",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.view.View",
+      "bounds": "[929,144][1039,254]",
+      "type": "clickable_element",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    }
+  ]
+}

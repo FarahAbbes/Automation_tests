@@ -1,0 +1,71 @@
+# login_page.robot
+*** Settings ***
+Library           AppiumLibrary
+
+*** Variables ***
+# --- Locators pour la page de Login ---
+# Back Button (Fragile - basé sur la position et type générique)
+${BACK_BUTTON}                   xpath=(//android.widget.ImageButton)[1]
+# Champ Email (Fragile - basé sur le texte du placeholder)
+${EMAIL_FIELD}                   xpath=//android.widget.EditText[@text='example@email.com']
+# Champ Mot de passe (Fragile - basé sur le texte du placeholder)
+${PASSWORD_FIELD}                xpath=//android.widget.EditText[@text='••••••']
+# Bouton de visibilité du mot de passe (Fragile - basé sur la relation et type générique)
+${PASSWORD_TOGGLE_BUTTON}        xpath=//android.widget.EditText[@text='••••••']/following-sibling::android.widget.ImageView
+# Lien Mot de passe oublié (Robuste - basé sur accessibility id)
+${FORGOT_PASSWORD_LINK}          accessibility id=Forgot Password?
+# Bouton de connexion (Robuste - basé sur accessibility id)
+${SIGN_IN_BUTTON}                accessibility id=Sign In
+# Bouton Créer un compte (Robuste - basé sur accessibility id)
+${CREATE_ACCOUNT_BUTTON}         accessibility id=Create Account
+
+# --- Variables de données de test (pour la réutilisabilité) ---
+${VALID_EMAIL}                   valid_user@example.com
+${VALID_PASSWORD}                ValidP@ssw0rd!
+${INVALID_EMAIL}                 invalid_user@example.com
+${INVALID_PASSWORD}              WrongP@ssw0rd!
+${EMPTY_EMAIL_ERROR}             Email field cannot be empty.
+${EMPTY_PASSWORD_ERROR}          Password field cannot be empty.
+${INVALID_CREDENTIALS_ERROR}     Invalid email or password.
+${EMAIL_FORMAT_ERROR}            Please enter a valid email address.
+
+*** Keywords ***
+Wait Until Login Page Is Displayed
+    [Documentation]    Attend que la page de login soit affichée.
+    Wait Until Element Is Visible    ${SIGN_IN_BUTTON}    timeout=10
+
+Enter Email Address
+    [Arguments]    ${email}
+    [Documentation]    Saisit une adresse e-mail dans le champ dédié.
+    Input Text    ${EMAIL_FIELD}    ${email}
+
+Enter Password
+    [Arguments]    ${password}
+    [Documentation]    Saisit un mot de passe dans le champ dédié.
+    Input Text    ${PASSWORD_FIELD}    ${password}
+
+Click Sign In Button
+    [Documentation]    Clique sur le bouton 'Sign In'.
+    Click Element    ${SIGN_IN_BUTTON}
+
+Click Forgot Password Link
+    [Documentation]    Clique sur le lien 'Forgot Password?'.
+    Click Element    ${FORGOT_PASSWORD_LINK}
+
+Click Create Account Button
+    [Documentation]    Clique sur le bouton 'Create Account'.
+    Click Element    ${CREATE_ACCOUNT_BUTTON}
+
+Click Back Button
+    [Documentation]    Clique sur le bouton de retour.
+    Click Element    ${BACK_BUTTON}
+
+Verify Error Message Is Displayed
+    [Arguments]    ${expected_message}
+    [Documentation]    Vérifie qu'un message d'erreur spécifique est affiché.
+    Page Should Contain Text    ${expected_message}
+
+Clear Login Fields
+    [Documentation]    Efface le contenu des champs Email et Mot de passe.
+    Clear Text    ${EMAIL_FIELD}
+    Clear Text    ${PASSWORD_FIELD}

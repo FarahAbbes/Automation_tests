@@ -1,0 +1,70 @@
+# test_login.robot
+*** Settings ***
+Library           AppiumLibrary
+Resource          login_page.robot
+
+*** Variables ***
+${APPIUM_URL}       http://localhost:4723
+${DEVICE_NAME}      emulator-5554
+${APP_PACKAGE}      com.example.mobile_app
+${APP_ACTIVITY}     .MainActivity
+
+*** Test Cases ***
+Scenario: User Logs In Successfully With Valid Credentials
+    [Documentation]    Vérifie la connexion réussie avec des identifiants valides.
+    Open Application
+    Wait Until Login Page Is Displayed
+    Enter Email Address    ${VALID_EMAIL}
+    Enter Password         ${VALID_PASSWORD}
+    Click Sign In Button
+    # Assumer qu'après une connexion réussie, l'application navigue vers une page de tableau de bord
+    # Ici, nous vérifierions un élément de la page suivante, par exemple :
+    # Wait Until Page Contains Element    accessibility id=Dashboard Title
+    # Ou vérifier que la page de login n'est plus visible :
+    Wait Until Element Is Not Visible    ${SIGN_IN_BUTTON}    timeout=10
+    Log To Console                       Connexion réussie !
+    Close Application
+
+Scenario: User Fails To Log In With Invalid Credentials
+    [Documentation]    Vérifie l'affichage d'un message d'erreur avec des identifiants invalides.
+    Open Application
+    Wait Until Login Page Is Displayed
+    Enter Email Address    ${INVALID_EMAIL}
+    Enter Password         ${INVALID_PASSWORD}
+    Click Sign In Button
+    Verify Error Message Is Displayed    ${INVALID_CREDENTIALS_ERROR}
+    Close Application
+
+Scenario: User Fails To Log In With Empty Email Field
+    [Documentation]    Vérifie l'affichage d'un message d'erreur lorsque le champ email est vide.
+    Open Application
+    Wait Until Login Page Is Displayed
+    Enter Password         ${VALID_PASSWORD}    # Saisir un mot de passe valide ou invalide, l'erreur devrait venir de l'email
+    Click Sign In Button
+    Verify Error Message Is Displayed    ${EMPTY_EMAIL_ERROR}
+    Close Application
+
+Scenario: User Fails To Log In With Only Whitespace In Email
+    [Documentation]    Vérifie l'affichage d'un message d'erreur si l'email contient uniquement des espaces.
+    Open Application
+    Wait Until Login Page Is Displayed
+    Enter Email Address    ${SPACE}
+    Enter Password         ${VALID_PASSWORD}
+    Click Sign In Button
+    Verify Error Message Is Displayed    ${EMAIL_FORMAT_ERROR} # Ou un message d'erreur spécifique aux champs invalides/vides
+    Close Application
+
+*** Keywords ***
+Open Application
+    [Documentation]    Ouvre l'application mobile.
+    Open Application    ${APPIUM_URL}
+    ...    platformName=Android
+    ...    deviceName=${DEVICE_NAME}
+    ...    appPackage=${APP_PACKAGE}
+    ...    appActivity=${APP_ACTIVITY}
+    ...    automationName=UiAutomator2
+    ...    noReset=true
+
+Close Application
+    [Documentation]    Ferme l'application mobile.
+    Close Application

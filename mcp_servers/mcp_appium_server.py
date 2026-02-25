@@ -1,16 +1,22 @@
 """
-MCP Appium Server for MyBiat Test Automation
-Expose l'UI mobile (Appium) comme contexte structuré à l'IA via MCP Protocol
+MCP Appium Server — MyBiat Test Automation
+==========================================
+Expose l'UI mobile (Appium) comme contexte structuré à l'IA via MCP Protocol.
 
 Outils exposés:
-  - get_ui_hierarchy              → Arborescence complète de l'UI
-  - get_page_source               → XML brut de l'écran courant
-  - find_element_by_strategies    → Cherche un élément (multi-stratégies)
-  - suggest_alternative_locators  → Self-healing : propose des alternatives
-  - execute_robot_test            → Lance un test Robot Framework
-  - take_screenshot               → Capture d'écran encodée base64
-  - analyze_current_screen        → [NEW] Analyse enrichie : classification
-                                    sémantique + détection page + locators RF
+  • get_ui_hierarchy              → Arborescence complète de l'UI
+  • get_page_source               → XML brut de l'écran courant
+  • find_element_by_strategies    → Recherche multi-stratégies d'un élément
+  • suggest_alternative_locators  → Self-healing : propose des alternatives
+  • execute_robot_test            → Lance un test Robot Framework
+  • take_screenshot               → Capture d'écran encodée base64
+  • analyze_current_screen        → Analyse enrichie : classification sémantique
+                                    + détection page + locators RF prêts à l'emploi
+
+Architecture:
+  - Simulation automatique si Appium non connecté (mode dev/CI sans device)
+  - Détection de page par heuristique ou Gemini Vision (si screenshot dispo)
+  - Locators classifiés : robust / fragile / missing
 """
 
 import os
@@ -23,66 +29,57 @@ from typing import Any, Optional
 from pathlib import Path
 
 # ============================================================================
-# CHARGEMENT AUTOMATIQUE DU .ENV
+# CHARGEMENT .ENV
 # ============================================================================
 try:
     from dotenv import load_dotenv
 
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parent.parent
-
-    env_loaded = False
-    for item in project_root.iterdir():
-        if item.is_dir() and "config" in item.name.lower():
-            env_path = item / ".env"
-            if env_path.exists():
-                load_dotenv(env_path)
-                print(f"✅ Variables d'environnement chargées depuis: {env_path}")
-                env_loaded = True
-                break
-
-    if not env_loaded:
-        env_root = project_root / ".env"
-        if env_root.exists():
-            load_dotenv(env_root)
-            print(f"✅ Variables chargées depuis la racine: {env_root}")
-        else:
-            load_dotenv()
-
+    _candidates = [
+        Path(__file__).resolve().parent.parent / "config" / ".env",
+        Path(__file__).resolve().parent / "config" / ".env",
+        Path(__file__).resolve().parent.parent / ".env",
+        Path.cwd() / "config" / ".env",
+        Path.cwd() / ".env",
+    ]
+    for _p in _candidates:
+        if _p.exists():
+            load_dotenv(_p)
+            print(f"✅ .env chargé : {_p}")
+            break
+    else:
+        load_dotenv()
 except ImportError:
-    print("⚠️ Module 'python-dotenv' non installé")
+    print("⚠️  python-dotenv absent — variables système utilisées")
 
 # ============================================================================
-# IMPORTS APPIUM
+# IMPORTS APPIUM  (graceful degradation → simulation si absent)
 # ============================================================================
 try:
     from appium import webdriver
-    from appium.options import AndroidOptions
+    from appium.options.android import UiAutomator2Options
     from appium.webdriver.common.appiumby import AppiumBy
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
     from selenium.common.exceptions import (
-        NoSuchElementException,
-        TimeoutException,
-        WebDriverException
+        NoSuchElementException, TimeoutException, WebDriverException,
     )
     APPIUM_AVAILABLE = True
 except ImportError:
     APPIUM_AVAILABLE = False
-    print("⚠️ Appium non installé. Mode simulation activé.")
+    print("⚠️  Appium non installé — mode simulation activé")
+    print("   pip install Appium-Python-Client selenium")
 
 from mcp.server.fastmcp import FastMCP
 
 # ============================================================================
-# CONFIGURATION
+# CONFIGURATION  (toutes les valeurs proviennent du .env)
 # ============================================================================
-
 mcp = FastMCP("Appium Context Server")
 
-APPIUM_SERVER_URL       = os.getenv("APPIUM_SERVER_URL", "")
-APPIUM_HOST             = os.getenv("APPIUM_HOST", "http://127.0.0.1")
-APPIUM_PORT             = os.getenv("APPIUM_PORT", "4723")
-APPIUM_URL              = APPIUM_SERVER_URL or f"{APPIUM_HOST}:{APPIUM_PORT}"
+APPIUM_SERVER_URL        = os.getenv("APPIUM_SERVER_URL", "")
+APPIUM_HOST              = os.getenv("APPIUM_HOST", "http://127.0.0.1")
+APPIUM_PORT              = os.getenv("APPIUM_PORT", "4723")
+APPIUM_URL               = APPIUM_SERVER_URL or f"{APPIUM_HOST}:{APPIUM_PORT}"
 
 ANDROID_PLATFORM_VERSION = (
     os.getenv("PLATFORM_VERSION") or
@@ -92,54 +89,84 @@ ANDROID_DEVICE_NAME = (
     os.getenv("DEVICE_NAME") or
     os.getenv("ANDROID_DEVICE_NAME") or "emulator-5554"
 )
-APP_PACKAGE  = os.getenv("APP_PACKAGE",  "com.example.mybiat")
-APP_ACTIVITY = os.getenv("APP_ACTIVITY", ".MainActivity")
-APP_APK_PATH = os.getenv("APP_PATH", os.getenv("APP_APK_PATH", ""))
+APP_PACKAGE    = os.getenv("APP_PACKAGE",  "com.example.mybiat")
+APP_ACTIVITY   = os.getenv("APP_ACTIVITY", ".MainActivity")
+APP_APK_PATH   = os.getenv("APP_PATH", os.getenv("APP_APK_PATH", ""))
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
-ELEMENT_TIMEOUT = int(os.getenv("ELEMENT_TIMEOUT", "10"))
-TESTS_DIR       = os.getenv("TESTS_DIR", "tests")
-SCREENSHOTS_DIR = os.getenv("SCREENSHOTS_DIR", "screenshots")
+ELEMENT_TIMEOUT  = int(os.getenv("ELEMENT_TIMEOUT", "10"))
+TESTS_DIR        = os.getenv("TESTS_DIR", "tests")
+SCREENSHOTS_DIR  = os.getenv("SCREENSHOTS_DIR", "screenshots")
 
-# Pages connues MyBiat — utilisées pour la détection heuristique
+# ── Pages connues — heuristique multi-app (override par Gemini si screenshot) ──
 KNOWN_PAGES = {
+    # Auth
     "login":         ["login", "connexion", "username", "password", "mot_de_passe",
-                      "edit_username", "edit_password", "btn_login", "se_connecter"],
-    "dashboard":     ["dashboard", "accueil", "home", "solde", "compte", "balance"],
+                      "edit_username", "edit_password", "btn_login", "se_connecter",
+                      "sign_in", "signin", "email", "tv_forgot"],
+    "register":      ["register", "signup", "sign_up", "inscription", "create_account",
+                      "btn_register", "confirm_password"],
+    "otp":           ["otp", "code_sms", "verification", "sms_code", "pin", "verify"],
+    # Navigation
+    "home":          ["home", "accueil", "dashboard", "main", "feed", "homepage",
+                      "welcome", "categories", "search", "what_would", "menu_home"],
+    "dashboard":     ["dashboard", "solde", "compte", "balance", "overview"],
+    # E-commerce / Food
+    "menu":          ["menu", "food", "restaurant", "dish", "meal", "cuisine",
+                      "categories", "all_items", "product_list"],
+    "cart":          ["cart", "panier", "basket", "order", "checkout", "commande",
+                      "total", "btn_checkout", "add_to_cart"],
+    "product":       ["product", "item", "detail", "description", "price", "rating",
+                      "add_to_cart", "quantity", "btn_add"],
+    "search":        ["search", "recherche", "filter", "query", "search_bar"],
+    # Compte utilisateur
+    "profile":       ["profile", "profil", "settings", "parametres", "mon_compte",
+                      "account", "my_account", "personal"],
+    "notifications": ["notification", "alerte", "bell", "notif", "alert"],
+    # Bancaire MyBiat
     "transfer":      ["transfer", "virement", "beneficiaire", "montant", "amount"],
     "accounts":      ["accounts", "comptes", "liste_comptes", "account_list"],
-    "profile":       ["profile", "profil", "settings", "parametres", "mon_compte"],
     "cards":         ["card", "carte", "visa", "mastercard", "carte_bancaire"],
-    "notifications": ["notification", "alerte", "bell", "notif"],
-    "otp":           ["otp", "code_sms", "verification", "sms_code", "pin"],
 }
 
 # ============================================================================
-# UTILITAIRES INTERNES — APPIUM
+# UTILITAIRES APPIUM
 # ============================================================================
 
 def _get_driver() -> Optional[Any]:
-    """Crée une session Appium. Retourne None si non disponible."""
+    """
+    Crée une session Appium (UiAutomator2Options).
+    Retourne None si Appium indisponible ou si la connexion échoue.
+    """
     if not APPIUM_AVAILABLE:
         return None
     try:
-        options = AndroidOptions()
-        options.platform_version       = ANDROID_PLATFORM_VERSION
-        options.device_name            = ANDROID_DEVICE_NAME
-        options.app_package            = APP_PACKAGE
-        options.app_activity           = APP_ACTIVITY
-        options.no_reset               = True
-        options.auto_grant_permissions = True
+        options = UiAutomator2Options()
+        options.platform_name                  = "Android"
+        options.platform_version               = ANDROID_PLATFORM_VERSION
+        options.device_name                    = ANDROID_DEVICE_NAME
+        options.app_package                    = APP_PACKAGE
+        options.app_activity                   = APP_ACTIVITY
+        options.no_reset                       = True
+        options.auto_grant_permissions         = True
+        options.new_command_timeout            = int(os.getenv("ELEMENT_TIMEOUT", "60"))
+        options.ignore_hidden_api_policy_error = True
 
-        if APP_APK_PATH and Path(APP_APK_PATH).exists():
+        if (APP_APK_PATH
+                and not APP_APK_PATH.startswith("/data/app/")
+                and Path(APP_APK_PATH).exists()):
             options.app = APP_APK_PATH
 
-        return webdriver.Remote(APPIUM_URL, options=options)
-    except Exception:
+        driver = webdriver.Remote(APPIUM_URL, options=options)
+        print(f"✅ Session Appium: {driver.current_package}/{driver.current_activity}")
+        return driver
+    except Exception as e:
+        print(f"⚠️  Session Appium échouée ({e}) → simulation activée")
         return None
 
 
 def _get_mock_page_source() -> str:
-    """XML de simulation avec le package configuré."""
+    """XML de simulation pour la page login MyBiat."""
     pkg = APP_PACKAGE
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <hierarchy rotation="0">
@@ -168,14 +195,11 @@ def _get_mock_page_source() -> str:
 
 
 # ============================================================================
-# UTILITAIRES INTERNES — ANALYSE UI (inspirés de ai_ui_inspector)
+# UTILITAIRES UI — CLASSIFICATION & EXTRACTION
 # ============================================================================
 
 def _classify_element(cls: str, rid: str, text: str, desc: str, clickable: bool) -> str:
-    """
-    Détermine le type sémantique d'un élément UI.
-    Retourne un label compréhensible par l'agent IA.
-    """
+    """Détermine le type sémantique d'un élément UI (label lisible par l'IA)."""
     combined = f"{cls} {rid} {text} {desc}".lower()
 
     if "edittext" in cls.lower():
@@ -207,68 +231,47 @@ def _classify_element(cls: str, rid: str, text: str, desc: str, clickable: bool)
 
     if "checkbox" in cls.lower():
         return "checkbox"
-
     if "imageview" in cls.lower():
         return "image"
-
     if clickable:
         return "clickable_element"
-
     return "element"
 
 
 def _build_rf_locators(resource_id: str, short_id: str, text: str,
                         content_desc: str, cls: str) -> dict:
-    """
-    Construit tous les locators Robot Framework possibles pour un élément.
-    Retourne un dict stratégie → valeur.
-    """
+    """Construit tous les locators Robot Framework disponibles pour un élément."""
     locators = {}
-
     if resource_id:
         locators["by_id"]     = f"id={resource_id}"
         locators["appium_id"] = f"id:{resource_id}"
-
     if text and len(text) < 60:
         locators["by_text"]          = f"xpath=//*[@text='{text}']"
         locators["by_text_contains"] = f"xpath=//*[contains(@text,'{text[:20]}')]"
-
     if content_desc:
         locators["by_accessibility"] = f"accessibility id={content_desc}"
-
     if cls and text:
         short_cls = cls.split(".")[-1]
         locators["by_class_text"] = f"xpath=//{short_cls}[@text='{text}']"
-
     return locators
 
 
-def _detect_page(elements: list) -> str:
+def _compute_locator_quality(resource_id: str, text: str, locators: dict) -> str:
     """
-    Détecte la page courante par heuristique sur resource_id, text et content_desc.
-    Retourne le nom de la page (ex: 'login', 'dashboard', 'unknown').
+    Calcule la qualité du locator selon la chaîne de priorité :
+      resource-id → robust | accessibility id → robust | text → fragile | rien → missing
     """
-    ids_and_texts = " ".join(
-        f"{e.get('short_id', '')} {e.get('text', '')} {e.get('content_desc', '')}"
-        for e in elements
-    ).lower()
-
-    scores = {}
-    for page_name, keywords in KNOWN_PAGES.items():
-        score = sum(1 for kw in keywords if kw in ids_and_texts)
-        if score > 0:
-            scores[page_name] = score
-
-    return max(scores, key=scores.get) if scores else "unknown"
+    if resource_id:
+        return "robust"
+    if locators.get("by_accessibility") or locators.get("appium_a11y"):
+        return "robust"
+    if text or locators.get("by_text") or locators.get("by_xpath"):
+        return "fragile"
+    return "missing"
 
 
 def _extract_enriched_elements(node: ET.Element, depth: int = 0) -> list:
-    """
-    Parcourt récursivement l'XML UI et extrait les éléments enrichis :
-    - Classification sémantique
-    - Locators RF prêts à l'emploi
-    - Métadonnées complètes
-    """
+    """Parse récursivement l'XML UI → liste d'éléments enrichis avec locators RF."""
     elements = []
     attrib   = node.attrib
 
@@ -281,39 +284,206 @@ def _extract_enriched_elements(node: ET.Element, depth: int = 0) -> list:
     bounds       = attrib.get("bounds", "")
     short_id     = resource_id.split("/")[-1] if "/" in resource_id else resource_id
 
-    # Garder uniquement les éléments utiles
     if resource_id or (text and len(text) < 120) or content_desc or clickable:
-        elem_type = _classify_element(cls, short_id, text, content_desc, clickable)
-        locators  = _build_rf_locators(resource_id, short_id, text, content_desc, cls)
+        elem_type       = _classify_element(cls, short_id, text, content_desc, clickable)
+        locators        = _build_rf_locators(resource_id, short_id, text, content_desc, cls)
+        locator_quality = _compute_locator_quality(resource_id, text, locators)
+
+        # Fallback xpath par position pour EditText/Button sans identifiant
+        if locator_quality == "missing":
+            if "EditText" in cls:
+                locators["by_xpath"] = f"xpath=//android.widget.EditText"
+                locator_quality = "fragile"
+            elif "Button" in cls:
+                locators["by_xpath"] = f"xpath=//android.widget.Button"
+                locator_quality = "fragile"
 
         elements.append({
-            "type":         elem_type,
-            "class":        cls,
-            "resource_id":  resource_id,
-            "short_id":     short_id,
-            "text":         text,
-            "content_desc": content_desc,
-            "bounds":       bounds,
-            "clickable":    clickable,
-            "enabled":      enabled,
-            "depth":        depth,
-            "locators":     locators,
-            # Indicateur de robustesse du locator
-            "locator_quality": (
-                "robust"   if resource_id else
-                "fragile"  if text else
-                "missing"
-            ),
+            "type":           elem_type,
+            "class":          cls,
+            "resource_id":    resource_id,
+            "short_id":       short_id,
+            "text":           text,
+            "content_desc":   content_desc,
+            "bounds":         bounds,
+            "clickable":      clickable,
+            "enabled":        enabled,
+            "depth":          depth,
+            "locators":       locators,
+            "locator_quality": locator_quality,
         })
 
     for child in node:
         elements.extend(_extract_enriched_elements(child, depth + 1))
-
     return elements
 
 
+def _compute_locator_stats(elements: list) -> dict:
+    """Calcule les statistiques de couverture des locators."""
+    robust  = sum(1 for e in elements if e.get("locator_quality") == "robust")
+    fragile = sum(1 for e in elements if e.get("locator_quality") == "fragile")
+    missing = sum(1 for e in elements if e.get("locator_quality") == "missing")
+    total   = len(elements)
+    covered = robust + fragile
+    return {
+        "robust":           robust,
+        "fragile":          fragile,
+        "missing":          missing,
+        "coverage_percent": round(covered / total * 100, 1) if total > 0 else 0.0,
+    }
+
+
+# ============================================================================
+# DÉTECTION DE PAGE  (heuristique + Gemini Vision)
+# ============================================================================
+
+def _detect_page(elements: list) -> str:
+    """Détection heuristique de la page courante via mots-clés des resource_id/text."""
+    ids_and_texts = " ".join(
+        f"{e.get('short_id', '')} {e.get('text', '')} {e.get('content_desc', '')}"
+        for e in elements
+    ).lower()
+    scores = {
+        page: sum(1 for kw in kws if kw in ids_and_texts)
+        for page, kws in KNOWN_PAGES.items()
+    }
+    best = {p: s for p, s in scores.items() if s > 0}
+    return max(best, key=best.get) if best else "unknown"
+
+
+def _detect_page_with_gemini(elements: list, screenshot_b64: str) -> str:
+    """
+    Détection intelligente via Gemini Vision — plus fiable que l'heuristique.
+    Utilisée uniquement si un vrai screenshot est disponible (>500 bytes).
+    Fallback transparent vers _detect_page() en cas d'erreur.
+    """
+    if not GEMINI_API_KEY or not screenshot_b64:
+        return _detect_page(elements)
+
+    # Ignorer les screenshots simulés (trop petits)
+    try:
+        if len(base64.b64decode(screenshot_b64)) < 500:
+            return _detect_page(elements)
+    except Exception:
+        return _detect_page(elements)
+
+    ui_summary = ", ".join(
+        e.get("text", e.get("short_id", ""))
+        for e in elements[:15]
+        if e.get("text") or e.get("short_id")
+    )
+
+    prompt = f"""Look at this mobile app screenshot carefully.
+
+Identify the current page/screen type from this list:
+login, register, otp, home, dashboard, menu, cart, product, search,
+profile, notifications, transfer, accounts, cards, settings, unknown
+
+UI text elements visible: {ui_summary}
+
+Rules:
+- Answer with ONLY the page name (one word, lowercase)
+- If you see a search bar + food categories + list of items -> "home"
+- If you see username/password fields -> "login"
+- If you see a shopping cart/order summary -> "cart"
+- If you see a food/product detail with price -> "product"
+- If unsure -> "unknown"
+
+Page name:"""
+
+    try:
+        import urllib.request, json as _json
+        payload = _json.dumps({
+            "contents": [{"parts": [
+                {"text": prompt},
+                {"inline_data": {"mime_type": "image/png", "data": screenshot_b64}},
+            ]}],
+            "generationConfig": {"maxOutputTokens": 20, "temperature": 0.1},
+        }).encode("utf-8")
+
+        url = (
+            f"https://generativelanguage.googleapis.com/v1beta/models/"
+            f"gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+        )
+        req = urllib.request.Request(
+            url, data=payload,
+            headers={"Content-Type": "application/json"}, method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = _json.loads(resp.read().decode())
+            raw    = result["candidates"][0]["content"]["parts"][0]["text"].strip().lower()
+            page   = re.sub(r"[^a-z_]", "", raw.split()[0] if raw.split() else "unknown")
+            valid  = list(KNOWN_PAGES.keys()) + ["unknown", "product", "search", "cart"]
+            return page if page in valid else _detect_page(elements)
+    except Exception as e:
+        print(f"⚠️  Gemini page detection failed: {e} — fallback heuristique")
+        return _detect_page(elements)
+
+
+# ============================================================================
+# UTILITAIRES SELF-HEALING
+# ============================================================================
+
+def _score_locator_similarity(candidate: str, target: str) -> float:
+    """Score de similarité Jaccard entre deux identifiants (0.0 → 1.0)."""
+    if not candidate or not target:
+        return 0.0
+    if candidate.lower() == target.lower():
+        return 1.0
+
+    def tokenize(s):
+        s = re.sub(r"([A-Z])", r"_\1", s).lower()
+        return set(re.split(r"[_\-\.\s]+", s)) - {""}
+
+    cand_tok = tokenize(candidate)
+    tgt_tok  = tokenize(target)
+    if not cand_tok or not tgt_tok:
+        return 0.0
+
+    jaccard = len(cand_tok & tgt_tok) / len(cand_tok | tgt_tok)
+    if target.lower() in candidate.lower() or candidate.lower() in target.lower():
+        jaccard = min(1.0, jaccard + 0.3)
+    return round(jaccard, 3)
+
+
+def _build_locator_suggestions(element: dict) -> list[str]:
+    """Construit plusieurs suggestions de locators pour un élément (self-healing)."""
+    suggestions = []
+    rid  = element.get("resource_id", "")
+    text = element.get("text", "")
+    desc = element.get("content_desc", "")
+    cls  = element.get("class", "")
+
+    if rid:
+        short_id = rid.split("/")[-1] if "/" in rid else rid
+        suggestions += [f"id:{short_id}", f"resource-id:{rid}"]
+    if text:
+        suggestions.append(f"xpath://*[@text='{text}']")
+    if desc:
+        suggestions.append(f"accessibility-id:{desc}")
+    if cls and text:
+        suggestions.append(f"xpath://{cls.split('.')[-1]}[@text='{text}']")
+
+    return suggestions or ["Aucune suggestion disponible"]
+
+
+def _parse_robot_output(stdout: str) -> dict:
+    """Parse la sortie de Robot Framework pour extraire les statistiques pass/fail."""
+    stats = {"passed": 0, "failed": 0, "skipped": 0, "total": 0}
+    if not stdout:
+        return stats
+    match = re.search(r"(\d+) tests?,\s*(\d+) passed,\s*(\d+) failed", stdout, re.IGNORECASE)
+    if match:
+        stats.update(
+            total=int(match.group(1)),
+            passed=int(match.group(2)),
+            failed=int(match.group(3)),
+        )
+    return stats
+
+
 def _parse_ui_node(node: ET.Element, depth: int = 0) -> dict:
-    """Parse récursivement un nœud XML → dict structuré (arborescence)."""
+    """Parse récursivement un nœud XML → dict structuré (pour get_ui_hierarchy)."""
     attrib = node.attrib
     result = {
         "class":        attrib.get("class", ""),
@@ -324,10 +494,8 @@ def _parse_ui_node(node: ET.Element, depth: int = 0) -> dict:
         "clickable":    attrib.get("clickable", "false") == "true",
         "enabled":      attrib.get("enabled", "true") == "true",
         "depth":        depth,
-        "children":     []
+        "children":     [_parse_ui_node(child, depth + 1) for child in node],
     }
-    for child in node:
-        result["children"].append(_parse_ui_node(child, depth + 1))
     return result
 
 
@@ -335,105 +503,42 @@ def _flatten_ui_elements(node: dict, elements: list = None) -> list:
     """Aplatit la hiérarchie UI en liste d'éléments interactifs."""
     if elements is None:
         elements = []
-
-    if (node.get("resource_id") or
-            (node.get("text") and len(node.get("text", "")) < 100) or
-            node.get("clickable")):
-        elements.append({
-            "class":        node.get("class", ""),
-            "resource_id":  node.get("resource_id", ""),
-            "text":         node.get("text", ""),
-            "content_desc": node.get("content_desc", ""),
-            "bounds":       node.get("bounds", ""),
-            "clickable":    node.get("clickable", False),
-            "enabled":      node.get("enabled", True),
-        })
-
+    if (node.get("resource_id")
+            or (node.get("text") and len(node.get("text", "")) < 100)
+            or node.get("clickable")):
+        elements.append({k: node[k] for k in
+                         ("class", "resource_id", "text", "content_desc",
+                          "bounds", "clickable", "enabled")})
     for child in node.get("children", []):
         _flatten_ui_elements(child, elements)
-
     return elements
 
 
-def _score_locator_similarity(candidate: str, target: str) -> float:
-    """Score de similarité entre deux locators (0.0 → 1.0)."""
-    if not candidate or not target:
-        return 0.0
-    candidate_lower = candidate.lower()
-    target_lower    = target.lower()
-    if candidate_lower == target_lower:
-        return 1.0
-
-    def tokenize(s):
-        s = re.sub(r'([A-Z])', r'_\1', s).lower()
-        return set(re.split(r'[_\-\.\s]+', s)) - {''}
-
-    cand_tokens   = tokenize(candidate)
-    target_tokens = tokenize(target)
-    if not cand_tokens or not target_tokens:
-        return 0.0
-
-    intersection = cand_tokens & target_tokens
-    union        = cand_tokens | target_tokens
-    jaccard      = len(intersection) / len(union)
-
-    if target_lower in candidate_lower or candidate_lower in target_lower:
-        jaccard = min(1.0, jaccard + 0.3)
-
-    return round(jaccard, 3)
-
-
 # ============================================================================
-# OUTILS MCP — EXISTANTS
+# OUTILS MCP
 # ============================================================================
 
 @mcp.tool()
 def get_ui_hierarchy(flatten: bool = False) -> dict[str, Any]:
     """
-    Récupère la hiérarchie complète de l'UI de l'application mobile.
-    Retourne une arborescence structurée (ou aplatie) des éléments UI.
+    Récupère la hiérarchie complète de l'UI.
 
     Args:
         flatten: Si True, retourne une liste plate des éléments interactifs.
 
     Returns:
-        Dict contenant la hiérarchie UI parsée.
+        Arborescence structurée ou liste plate selon `flatten`.
     """
-    page_source = None
-    simulation  = False
-
-    if APPIUM_AVAILABLE:
-        driver = _get_driver()
-        if driver:
-            try:
-                page_source = driver.page_source
-                driver.quit()
-            except Exception:
-                pass
-
-    if not page_source:
-        page_source = _get_mock_page_source()
-        simulation  = True
-
+    page_source, simulation = _fetch_page_source()
     try:
         root      = ET.fromstring(page_source)
         hierarchy = _parse_ui_node(root)
-
         if flatten:
             elements = _flatten_ui_elements(hierarchy)
-            return {
-                "success":    True,
-                "simulation": simulation,
-                "mode":       "flat",
-                "count":      len(elements),
-                "elements":   elements
-            }
-        return {
-            "success":    True,
-            "simulation": simulation,
-            "mode":       "tree",
-            "hierarchy":  hierarchy
-        }
+            return {"success": True, "simulation": simulation,
+                    "mode": "flat", "count": len(elements), "elements": elements}
+        return {"success": True, "simulation": simulation,
+                "mode": "tree", "hierarchy": hierarchy}
     except ET.ParseError as e:
         return {"success": False, "error": f"Erreur parsing XML: {e}"}
 
@@ -442,31 +547,13 @@ def get_ui_hierarchy(flatten: bool = False) -> dict[str, Any]:
 def get_page_source() -> dict[str, Any]:
     """
     Retourne le XML brut de l'écran actuel (page source Appium).
-
-    Returns:
-        Dict avec le XML source et les métadonnées.
     """
-    page_source = None
-    simulation  = False
-
-    if APPIUM_AVAILABLE:
-        driver = _get_driver()
-        if driver:
-            try:
-                page_source = driver.page_source
-                driver.quit()
-            except Exception:
-                pass
-
-    if not page_source:
-        page_source = _get_mock_page_source()
-        simulation  = True
-
+    page_source, simulation = _fetch_page_source()
     return {
         "success":    True,
         "simulation": simulation,
         "xml":        page_source,
-        "size_bytes": len(page_source.encode("utf-8"))
+        "size_bytes": len(page_source.encode("utf-8")),
     }
 
 
@@ -476,29 +563,26 @@ def find_element_by_strategies(
     text:         Optional[str] = None,
     content_desc: Optional[str] = None,
     class_name:   Optional[str] = None,
-    xpath:        Optional[str] = None
+    xpath:        Optional[str] = None,
 ) -> dict[str, Any]:
     """
     Cherche un élément UI avec plusieurs stratégies en cascade.
-    Essentiel pour le self-healing : si resource-id ne marche plus, tente text/xpath.
+    Si une stratégie échoue, les suivantes sont tentées automatiquement.
 
     Args:
-        resource_id:  Ex: "com.example.mybiat:id/btn_login" ou "btn_login"
+        resource_id:  Ex: "com.example.mybiat:id/btn_login" ou simplement "btn_login"
         text:         Texte visible. Ex: "Se connecter"
-        content_desc: Description d'accessibilité. Ex: "Login button"
+        content_desc: Description d'accessibilité
         class_name:   Classe Android. Ex: "android.widget.Button"
-        xpath:        XPath complet.
+        xpath:        XPath complet
 
     Returns:
-        Dict indiquant quelle stratégie a réussi et les attributs de l'élément.
+        Quelle stratégie a réussi + attributs de l'élément trouvé.
     """
     results = {
-        "success":          False,
-        "found":            False,
-        "strategy_used":    None,
-        "element_details":  None,
-        "tried_strategies": [],
-        "simulation":       False
+        "success": False, "found": False,
+        "strategy_used": None, "element_details": None,
+        "tried_strategies": [], "simulation": False,
     }
 
     if APPIUM_AVAILABLE:
@@ -507,9 +591,7 @@ def find_element_by_strategies(
             try:
                 strategies = []
                 if resource_id:
-                    rid = resource_id
-                    if ":" not in rid and APP_PACKAGE:
-                        rid = f"{APP_PACKAGE}:id/{rid}"
+                    rid = resource_id if ":" in resource_id else f"{APP_PACKAGE}:id/{resource_id}"
                     strategies.append(("resource_id", AppiumBy.ID, rid))
                 if text:
                     strategies.append(("text", AppiumBy.XPATH, f"//*[@text='{text}']"))
@@ -523,22 +605,19 @@ def find_element_by_strategies(
                 for strategy_name, by, value in strategies:
                     results["tried_strategies"].append(strategy_name)
                     try:
-                        wait    = WebDriverWait(driver, timeout=ELEMENT_TIMEOUT)
-                        element = wait.until(EC.presence_of_element_located((by, value)))
-                        results.update({
-                            "success":       True,
-                            "found":         True,
-                            "strategy_used": strategy_name,
-                            "element_details": {
-                                "resource_id":  element.get_attribute("resourceId"),
-                                "text":         element.text,
-                                "content_desc": element.get_attribute("contentDescription"),
-                                "class":        element.get_attribute("className"),
-                                "bounds":       element.get_attribute("bounds"),
-                                "enabled":      element.is_enabled(),
-                                "displayed":    element.is_displayed(),
-                            }
-                        })
+                        element = WebDriverWait(driver, ELEMENT_TIMEOUT).until(
+                            EC.presence_of_element_located((by, value))
+                        )
+                        results.update(success=True, found=True, strategy_used=strategy_name,
+                                       element_details={
+                                           "resource_id":  element.get_attribute("resourceId"),
+                                           "text":         element.text,
+                                           "content_desc": element.get_attribute("contentDescription"),
+                                           "class":        element.get_attribute("className"),
+                                           "bounds":       element.get_attribute("bounds"),
+                                           "enabled":      element.is_enabled(),
+                                           "displayed":    element.is_displayed(),
+                                       })
                         break
                     except (NoSuchElementException, TimeoutException):
                         continue
@@ -548,84 +627,74 @@ def find_element_by_strategies(
                 return results
             except Exception as e:
                 results["error"] = str(e)
+                try: driver.quit()
+                except Exception: pass
 
-    # Mode simulation
+    # ── Mode simulation ────────────────────────────────────────────────────
     results["simulation"] = True
     results["success"]    = True
-
     try:
         root = ET.fromstring(_get_mock_page_source())
-
-        def search_mock(node, strategy, value):
-            attrib = node.attrib
-            if strategy == "resource_id":
-                rid = attrib.get("resource-id", "")
-                if value in rid or rid.endswith(value):
-                    return attrib
-            elif strategy == "text":
-                if attrib.get("text", "") == value:
-                    return attrib
-            elif strategy == "content_desc":
-                if attrib.get("content-desc", "") == value:
-                    return attrib
-            elif strategy == "class_name":
-                if attrib.get("class", "") == value:
-                    return attrib
-            for child in node:
-                found = search_mock(child, strategy, value)
-                if found:
-                    return found
-            return None
-
-        strategies_to_try = []
-        if resource_id:
-            strategies_to_try.append(("resource_id", resource_id))
-        if text:
-            strategies_to_try.append(("text", text))
-        if content_desc:
-            strategies_to_try.append(("content_desc", content_desc))
-        if class_name:
-            strategies_to_try.append(("class_name", class_name))
-
-        for strategy_name, value in strategies_to_try:
+        for strategy_name, value in [
+            ("resource_id", resource_id), ("text", text),
+            ("content_desc", content_desc), ("class_name", class_name),
+        ]:
+            if not value:
+                continue
             results["tried_strategies"].append(strategy_name)
-            found = search_mock(root, strategy_name, value)
+            found = _search_mock_xml(root, strategy_name, value)
             if found:
-                results.update({
-                    "found":         True,
-                    "strategy_used": strategy_name,
-                    "element_details": {
-                        "resource_id":  found.get("resource-id", ""),
-                        "text":         found.get("text", ""),
-                        "content_desc": found.get("content-desc", ""),
-                        "class":        found.get("class", ""),
-                        "bounds":       found.get("bounds", ""),
-                        "enabled":      found.get("enabled", "true") == "true",
-                        "displayed":    True
-                    }
+                results.update(found=True, strategy_used=strategy_name, element_details={
+                    "resource_id":  found.get("resource-id", ""),
+                    "text":         found.get("text", ""),
+                    "content_desc": found.get("content-desc", ""),
+                    "class":        found.get("class", ""),
+                    "bounds":       found.get("bounds", ""),
+                    "enabled":      found.get("enabled", "true") == "true",
+                    "displayed":    True,
                 })
                 break
     except ET.ParseError:
         pass
-
     return results
+
+
+def _search_mock_xml(node: ET.Element, strategy: str, value: str) -> Optional[dict]:
+    """Recherche récursive dans l'XML simulé."""
+    attrib = node.attrib
+    match  = False
+    if strategy == "resource_id":
+        rid   = attrib.get("resource-id", "")
+        match = value in rid or rid.endswith(value)
+    elif strategy == "text":
+        match = attrib.get("text", "") == value
+    elif strategy == "content_desc":
+        match = attrib.get("content-desc", "") == value
+    elif strategy == "class_name":
+        match = attrib.get("class", "") == value
+    if match:
+        return attrib
+    for child in node:
+        result = _search_mock_xml(child, strategy, value)
+        if result:
+            return result
+    return None
 
 
 @mcp.tool()
 def suggest_alternative_locators(
     broken_locator_id: str,
-    context_hint:      Optional[str] = None
+    context_hint:      Optional[str] = None,
 ) -> dict[str, Any]:
     """
     SELF-HEALING : Propose des locators alternatifs pour un locator cassé.
-    Analyse l'UI actuelle et trouve les meilleurs candidats de remplacement.
 
     Args:
-        broken_locator_id: L'ID du locator cassé (ex: "btn_login_old")
-        context_hint: Indice sur le rôle de l'élément (ex: "bouton de connexion")
+        broken_locator_id: L'identifiant du locator cassé (ex: "btn_login_old")
+        context_hint: Description du rôle de l'élément (ex: "bouton de connexion")
 
     Returns:
-        Dict avec les alternatives triées par score de confiance décroissant.
+        Liste d'alternatives triées par score de confiance décroissant.
     """
     ui_result = get_ui_hierarchy(flatten=True)
     if not ui_result["success"]:
@@ -636,32 +705,24 @@ def suggest_alternative_locators(
     alternatives = []
 
     for elem in elements:
-        rid          = elem.get("resource_id", "")
-        text         = elem.get("text", "")
-        desc         = elem.get("content_desc", "")
-        cls          = elem.get("class", "")
-        short_id     = rid.split("/")[-1] if "/" in rid else rid
-        score_rid    = _score_locator_similarity(short_id, broken_locator_id) if rid else 0.0
+        rid      = elem.get("resource_id", "")
+        short_id = rid.split("/")[-1] if "/" in rid else rid
+        score    = _score_locator_similarity(short_id, broken_locator_id) if rid else 0.0
 
-        context_bonus = 0.0
         if context_hint:
-            hint_lower = context_hint.lower()
-            if text and hint_lower in text.lower():
-                context_bonus = 0.2
-            elif desc and hint_lower in desc.lower():
-                context_bonus = 0.15
+            hint = context_hint.lower()
+            if hint in elem.get("text", "").lower() or hint in elem.get("content_desc", "").lower():
+                score = min(1.0, score + 0.2)
 
-        max_score = score_rid + context_bonus
-
-        if max_score > 0.1:
+        if score > 0.1:
             alternatives.append({
                 "resource_id":        rid,
-                "text":               text,
-                "content_desc":       desc,
-                "class":              cls,
+                "text":               elem.get("text", ""),
+                "content_desc":       elem.get("content_desc", ""),
+                "class":              elem.get("class", ""),
                 "bounds":             elem.get("bounds", ""),
-                "confidence_score":   round(min(1.0, max_score), 3),
-                "suggested_locators": _build_locator_suggestions(elem)
+                "confidence_score":   round(score, 3),
+                "suggested_locators": _build_locator_suggestions(elem),
             })
 
     alternatives.sort(key=lambda x: x["confidence_score"], reverse=True)
@@ -673,7 +734,7 @@ def suggest_alternative_locators(
         recommendation = (
             f"Remplacer '{broken_locator_id}' par "
             f"'{best['suggested_locators'][0]}' "
-            f"(confiance: {best['confidence_score']*100:.0f}%)"
+            f"(confiance : {best['confidence_score']*100:.0f}%)"
         )
 
     return {
@@ -682,30 +743,8 @@ def suggest_alternative_locators(
         "broken_locator":     broken_locator_id,
         "alternatives_count": len(alternatives),
         "alternatives":       alternatives,
-        "recommendation":     recommendation
+        "recommendation":     recommendation,
     }
-
-
-def _build_locator_suggestions(element: dict) -> list[str]:
-    """Construit plusieurs suggestions de locators pour un élément."""
-    suggestions = []
-    rid  = element.get("resource_id", "")
-    text = element.get("text", "")
-    desc = element.get("content_desc", "")
-    cls  = element.get("class", "")
-
-    if rid:
-        short_id = rid.split("/")[-1] if "/" in rid else rid
-        suggestions.append(f"id:{short_id}")
-        suggestions.append(f"resource-id:{rid}")
-    if text:
-        suggestions.append(f"xpath://*[@text='{text}']")
-    if desc:
-        suggestions.append(f"accessibility-id:{desc}")
-    if cls and text:
-        suggestions.append(f"xpath://{cls.split('.')[-1]}[@text='{text}']")
-
-    return suggestions or ["Aucune suggestion disponible"]
 
 
 @mcp.tool()
@@ -714,10 +753,10 @@ def take_screenshot(save_path: Optional[str] = None) -> dict[str, Any]:
     Capture l'écran actuel de l'application mobile.
 
     Args:
-        save_path: Chemin optionnel pour sauvegarder le PNG.
+        save_path: Chemin optionnel pour sauvegarder le PNG localement.
 
     Returns:
-        Dict avec l'image en base64 et les métadonnées.
+        Image encodée en base64 + métadonnées.
     """
     if APPIUM_AVAILABLE:
         driver = _get_driver()
@@ -726,34 +765,29 @@ def take_screenshot(save_path: Optional[str] = None) -> dict[str, Any]:
                 screenshot_b64 = driver.get_screenshot_as_base64()
                 driver.quit()
                 result = {
-                    "success":    True,
-                    "simulation": False,
-                    "format":     "PNG",
-                    "encoding":   "base64",
-                    "data":       screenshot_b64,
-                    "size_bytes": len(base64.b64decode(screenshot_b64))
+                    "success": True, "simulation": False,
+                    "format": "PNG", "encoding": "base64",
+                    "data": screenshot_b64,
+                    "size_bytes": len(base64.b64decode(screenshot_b64)),
                 }
                 if save_path:
                     path = Path(save_path)
                     path.parent.mkdir(parents=True, exist_ok=True)
-                    with open(path, "wb") as f:
-                        f.write(base64.b64decode(screenshot_b64))
+                    path.write_bytes(base64.b64decode(screenshot_b64))
                     result["saved_to"] = str(path)
                 return result
             except Exception:
                 pass
 
-    MOCK_PNG_B64 = (
+    # Image simulée 1×1 px
+    MOCK_PNG = (
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhf"
         "DwAChwGA60e6kgAAAABJRU5ErkJggg=="
     )
     return {
-        "success":    True,
-        "simulation": True,
-        "format":     "PNG",
-        "encoding":   "base64",
-        "data":       MOCK_PNG_B64,
-        "note":       "Image simulée (Appium non connecté)"
+        "success": True, "simulation": True,
+        "format": "PNG", "encoding": "base64",
+        "data": MOCK_PNG, "note": "Image simulée (Appium non connecté)",
     }
 
 
@@ -762,37 +796,34 @@ def execute_robot_test(
     test_file:  str,
     test_tags:  Optional[str] = None,
     test_name:  Optional[str] = None,
-    output_dir: str           = "results"
+    output_dir: str           = "results",
 ) -> dict[str, Any]:
     """
     Lance l'exécution d'un fichier de test Robot Framework.
 
     Args:
-        test_file:  Chemin du fichier .robot à exécuter
-        test_tags:  Tags à exécuter (ex: "login" ou "smoke")
-        test_name:  Nom exact du test à exécuter
-        output_dir: Répertoire de sortie pour les rapports
+        test_file:  Chemin du fichier .robot
+        test_tags:  Tags à inclure (ex: "login", "smoke")
+        test_name:  Nom exact d'un test à exécuter
+        output_dir: Répertoire pour les rapports Allure/RF
 
     Returns:
-        Dict avec statut, statistiques pass/fail et logs.
+        Statistiques pass/fail + chemin des rapports.
     """
-    project_root   = Path(__file__).resolve().parent.parent
-    full_test_path = None
+    project_root = Path(__file__).resolve().parent.parent
+    full_path    = None
 
     for candidate in [
         Path(test_file),
         project_root / test_file,
-        project_root / TESTS_DIR / test_file
+        project_root / TESTS_DIR / test_file,
     ]:
         if candidate.exists():
-            full_test_path = candidate
+            full_path = candidate
             break
 
-    if not full_test_path:
-        return {
-            "success": False,
-            "error":   f"Fichier de test introuvable: {test_file}"
-        }
+    if not full_path:
+        return {"success": False, "error": f"Fichier introuvable: {test_file}"}
 
     output_path = project_root / output_dir
     output_path.mkdir(parents=True, exist_ok=True)
@@ -809,7 +840,7 @@ def execute_robot_test(
         cmd += ["--include", test_tags]
     if test_name:
         cmd += ["--test", test_name]
-    cmd.append(str(full_test_path))
+    cmd.append(str(full_path))
 
     try:
         proc  = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
@@ -826,187 +857,154 @@ def execute_robot_test(
             "log_file":    str(output_path / "log.html"),
             "report_file": str(output_path / "report.html"),
             "stdout_tail": proc.stdout[-2000:] if proc.stdout else "",
-            "stderr_tail": proc.stderr[-1000:] if proc.stderr else ""
+            "stderr_tail": proc.stderr[-1000:] if proc.stderr else "",
         }
     except subprocess.TimeoutExpired:
-        return {"success": False, "error": "Timeout: test dépassé 5 minutes"}
+        return {"success": False, "error": "Timeout : test dépassé 5 minutes"}
     except FileNotFoundError:
-        return {"success": False, "error": "Robot Framework non trouvé"}
+        return {"success": False, "error": "Robot Framework non trouvé (pip install robotframework)"}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
 
-def _parse_robot_output(stdout: str) -> dict:
-    """Parse la sortie Robot Framework pour extraire les statistiques."""
-    stats = {"passed": 0, "failed": 0, "skipped": 0, "total": 0}
-    if not stdout:
-        return stats
-    pattern = r"(\d+) tests?,\s*(\d+) passed,\s*(\d+) failed"
-    match   = re.search(pattern, stdout, re.IGNORECASE)
-    if match:
-        stats["total"]  = int(match.group(1))
-        stats["passed"] = int(match.group(2))
-        stats["failed"] = int(match.group(3))
-    return stats
-
-
-# ============================================================================
-# NOUVEL OUTIL MCP — analyze_current_screen
-# ============================================================================
-
 @mcp.tool()
 def analyze_current_screen(include_screenshot: bool = True) -> dict[str, Any]:
     """
-    ⭐ ANALYSE ENRICHIE DE L'ÉCRAN COURANT.
+    ⭐ ANALYSE ENRICHIE DE L'ÉCRAN COURANT — outil principal de l'agent.
 
-    Combine extraction Appium + enrichissement sémantique en un seul appel.
-    Fournit à l'Agent Appium un contexte complet et structuré prêt pour le LLM :
-      - Éléments UI avec classification sémantique (login_button, password_field…)
-      - Détection automatique de la page (login, dashboard, transfer…)
-      - Locators Robot Framework générés pour chaque élément
-      - Évaluation de la qualité des locators (robust / fragile / missing)
-      - Screenshot encodé base64 (optionnel)
-      - Statistiques de couverture
+    Combine Appium + enrichissement sémantique en un seul appel MCP.
+    Fournit à l'agent un contexte complet prêt pour injection dans un prompt LLM :
+      • Éléments UI avec type sémantique (login_button, password_field…)
+      • Détection automatique de la page (login, home, transfer…)
+      • Locators Robot Framework pour chaque élément
+      • Qualité des locators : robust / fragile / missing
+      • Statistiques de couverture
+      • Screenshot base64 optionnel
 
     Args:
         include_screenshot: Inclure le screenshot base64 dans la réponse.
-
-    Returns:
-        Dict structuré prêt à être injecté dans un prompt LLM.
     """
-    page_source    = None
-    screenshot_b64 = None
-    simulation     = False
+    page_source, simulation = _fetch_page_source()
+    screenshot_b64          = None
 
-    # ── 1. Récupérer UI + screenshot via Appium ────────────────────────────
-    if APPIUM_AVAILABLE:
+    # Screenshot via Appium si disponible
+    if APPIUM_AVAILABLE and not simulation and include_screenshot:
         driver = _get_driver()
         if driver:
             try:
-                page_source = driver.page_source
-                if include_screenshot:
-                    screenshot_b64 = driver.get_screenshot_as_base64()
+                screenshot_b64 = driver.get_screenshot_as_base64()
                 driver.quit()
             except Exception:
-                try:
-                    driver.quit()
-                except Exception:
-                    pass
+                try: driver.quit()
+                except Exception: pass
 
-    if not page_source:
-        page_source = _get_mock_page_source()
-        simulation  = True
-
-    # ── 2. Parser le XML et extraire les éléments enrichis ─────────────────
+    # Parse XML
     try:
         root     = ET.fromstring(page_source)
         elements = _extract_enriched_elements(root)
     except ET.ParseError as e:
         return {"success": False, "error": f"Erreur parsing XML: {e}"}
 
-    # ── 3. Détecter la page courante ───────────────────────────────────────
-    page_name = _detect_page(elements)
+    # Détection de page
+    page_name = (
+        _detect_page_with_gemini(elements, screenshot_b64)
+        if screenshot_b64
+        else _detect_page(elements)
+    )
 
-    # ── 4. Filtrer les éléments interactifs (utiles pour l'agent) ──────────
+    # Éléments interactifs uniquement (pour le prompt LLM)
     interactive = [
         e for e in elements
         if e["clickable"] or "field" in e["type"] or "button" in e["type"]
     ]
 
-    # ── 5. Statistiques de qualité des locators ────────────────────────────
-    quality_counts = {"robust": 0, "fragile": 0, "missing": 0}
-    for e in elements:
-        q = e.get("locator_quality", "missing")
-        quality_counts[q] = quality_counts.get(q, 0) + 1
+    locator_stats = _compute_locator_stats(elements)
 
-    total = len(elements)
-    locator_coverage = round(
-        (quality_counts["robust"] / total * 100) if total > 0 else 0, 1
-    )
-
-    # ── 6. Construire le résultat final ────────────────────────────────────
     result = {
         "success":    True,
         "simulation": simulation,
-
         # Contexte page
-        "page_name":          page_name,
-        "app_package":        APP_PACKAGE,
-        "app_activity":       APP_ACTIVITY,
-
-        # Éléments UI
-        "total_elements":       total,
+        "page_name":    page_name,
+        "app_package":  APP_PACKAGE,
+        "app_activity": APP_ACTIVITY,
+        # Éléments
+        "total_elements":       len(elements),
         "interactive_elements": len(interactive),
         "elements":             elements,
-
-        # Résumé pour le prompt LLM (éléments interactifs seulement)
+        # Résumé pour le prompt (éléments interactifs uniquement)
         "interactive_summary": [
             {
-                "type":           e["type"],
-                "short_id":       e["short_id"],
-                "resource_id":    e["resource_id"],
-                "text":           e["text"],
-                "content_desc":   e["content_desc"],
-                "enabled":        e["enabled"],
+                "type":            e["type"],
+                "short_id":        e["short_id"],
+                "resource_id":     e["resource_id"],
+                "text":            e["text"],
+                "content_desc":    e["content_desc"],
+                "enabled":         e["enabled"],
                 "locator_quality": e["locator_quality"],
-                "locators":       e["locators"],
+                "locators":        e["locators"],
             }
             for e in interactive
         ],
-
-        # Qualité des locators
-        "locator_stats": {
-            "robust":   quality_counts["robust"],
-            "fragile":  quality_counts["fragile"],
-            "missing":  quality_counts["missing"],
-            "coverage_percent": locator_coverage,
-        },
-
-        # Éléments fragiles à surveiller (self-healing prioritaire)
+        # Qualité globale
+        "locator_stats": locator_stats,
+        # Locators fragiles (surveiller pour self-healing)
         "fragile_locators": [
             {
                 "short_id": e["short_id"],
                 "type":     e["type"],
                 "text":     e["text"],
                 "locators": e["locators"],
-                "reason":   "Basé uniquement sur le texte visible (sensible aux traductions)"
+                "reason":   "Basé sur le texte visible — sensible aux traductions",
             }
-            for e in elements
-            if e["locator_quality"] == "fragile"
+            for e in elements if e["locator_quality"] == "fragile"
         ],
-
-        # Éléments sans locator (à corriger en priorité)
+        # Éléments sans locator (à corriger)
         "missing_locators": [
             {
                 "class":  e["class"],
                 "bounds": e["bounds"],
                 "type":   e["type"],
-                "reason": "Aucun resource-id, text ou content-desc disponible"
+                "reason": "Aucun resource-id, text ou content-desc disponible",
             }
-            for e in elements
-            if e["locator_quality"] == "missing"
+            for e in elements if e["locator_quality"] == "missing"
         ],
     }
 
     # Screenshot optionnel
-    if include_screenshot and screenshot_b64:
-        result["screenshot"] = {
-            "encoding": "base64",
-            "format":   "PNG",
-            "data":     screenshot_b64
-        }
-    elif include_screenshot and simulation:
-        result["screenshot"] = {
-            "encoding": "base64",
-            "format":   "PNG",
-            "data":     (
-                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhf"
-                "DwAChwGA60e6kgAAAABJRU5ErkJggg=="
-            ),
-            "note": "Image simulée"
-        }
+    if include_screenshot:
+        if screenshot_b64:
+            result["screenshot"] = {"encoding": "base64", "format": "PNG", "data": screenshot_b64}
+        elif simulation:
+            result["screenshot"] = {
+                "encoding": "base64", "format": "PNG",
+                "data": ("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhf"
+                         "DwAChwGA60e6kgAAAABJRU5ErkJggg=="),
+                "note": "Image simulée",
+            }
 
     return result
+
+
+# ============================================================================
+# HELPER INTERNE — récupération page source (factorisée)
+# ============================================================================
+
+def _fetch_page_source() -> tuple[str, bool]:
+    """
+    Tente de récupérer le page source via Appium.
+    Retourne (xml_string, simulation_bool).
+    """
+    if APPIUM_AVAILABLE:
+        driver = _get_driver()
+        if driver:
+            try:
+                source = driver.page_source
+                driver.quit()
+                return source, False
+            except Exception:
+                try: driver.quit()
+                except Exception: pass
+    return _get_mock_page_source(), True
 
 
 # ============================================================================
@@ -1014,23 +1012,22 @@ def analyze_current_screen(include_screenshot: bool = True) -> dict[str, Any]:
 # ============================================================================
 
 if __name__ == "__main__":
-    print("\n" + "="*60)
-    print("MCP APPIUM SERVER — DÉMARRAGE")
-    print("="*60)
-    print(f"   Appium URL : {APPIUM_URL}")
-    print(f"   Package    : {APP_PACKAGE}")
-    print(f"   Activity   : {APP_ACTIVITY}")
-    print(f"   Device     : {ANDROID_DEVICE_NAME}")
-    print(f"   Android    : {ANDROID_PLATFORM_VERSION}")
-    print(f"   Appium SDK : {'✅ Disponible' if APPIUM_AVAILABLE else '⚠️ Simulation'}")
-    print("\nOutils exposés:")
-    print("   • get_ui_hierarchy")
-    print("   • get_page_source")
-    print("   • find_element_by_strategies")
-    print("   • suggest_alternative_locators")
-    print("   • execute_robot_test")
-    print("   • take_screenshot")
-    print("   • analyze_current_screen  ← NEW")
-    print("\n🚀 Serveur MCP Appium prêt!")
-    print("="*60 + "\n")
+    print("\n" + "=" * 60)
+    print("  MCP APPIUM SERVER — DÉMARRAGE")
+    print("=" * 60)
+    print(f"   Appium URL     : {APPIUM_URL}")
+    print(f"   App Package    : {APP_PACKAGE}")
+    print(f"   App Activity   : {APP_ACTIVITY}")
+    print(f"   Device         : {ANDROID_DEVICE_NAME}")
+    print(f"   Android        : {ANDROID_PLATFORM_VERSION}")
+    print(f"   Appium SDK     : {'✅ Disponible' if APPIUM_AVAILABLE else '⚠️  Simulation'}")
+    print(f"   Gemini Vision  : {'✅ Configuré' if GEMINI_API_KEY else '⚠️  Heuristique only'}")
+    print("\n   Outils exposés :")
+    for tool in [
+        "get_ui_hierarchy", "get_page_source", "find_element_by_strategies",
+        "suggest_alternative_locators", "execute_robot_test",
+        "take_screenshot", "analyze_current_screen",
+    ]:
+        print(f"   • {tool}")
+    print("\n🚀 Serveur MCP prêt!\n" + "=" * 60 + "\n")
     mcp.run()

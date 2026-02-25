@@ -1,0 +1,223 @@
+{
+  "success": true,
+  "simulation": true,
+  "page_name": "login",
+  "app_package": "com.example.mobile_app",
+  "app_activity": ".MainActivity",
+  "total_elements": 7,
+  "interactive_elements": 5,
+  "elements": [
+    {
+      "type": "element",
+      "class": "",
+      "resource_id": "android:id/content",
+      "short_id": "content",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[0,0][1080,2340]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 1,
+      "locators": {
+        "by_id": "id=android:id/content",
+        "appium_id": "id:android:id/content"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "element",
+      "class": "",
+      "resource_id": "com.example.mobile_app:id/tv_title",
+      "short_id": "tv_title",
+      "text": "MyBiat - Connexion",
+      "content_desc": "",
+      "bounds": "[0,50][1080,150]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/tv_title",
+        "appium_id": "id:com.example.mobile_app:id/tv_title",
+        "by_text": "xpath=//*[@text='MyBiat - Connexion']",
+        "by_text_contains": "xpath=//*[contains(@text,'MyBiat - Connexion')]"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "clickable_element",
+      "class": "",
+      "resource_id": "com.example.mobile_app:id/edit_username",
+      "short_id": "edit_username",
+      "text": "",
+      "content_desc": "Champ identifiant",
+      "bounds": "[100,200][980,320]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/edit_username",
+        "appium_id": "id:com.example.mobile_app:id/edit_username",
+        "by_accessibility": "accessibility id=Champ identifiant"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "clickable_element",
+      "class": "",
+      "resource_id": "com.example.mobile_app:id/edit_password",
+      "short_id": "edit_password",
+      "text": "",
+      "content_desc": "Champ mot de passe",
+      "bounds": "[100,350][980,470]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/edit_password",
+        "appium_id": "id:com.example.mobile_app:id/edit_password",
+        "by_accessibility": "accessibility id=Champ mot de passe"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "clickable_element",
+      "class": "",
+      "resource_id": "com.example.mobile_app:id/cb_remember_me",
+      "short_id": "cb_remember_me",
+      "text": "Se souvenir de moi",
+      "content_desc": "",
+      "bounds": "[100,500][600,580]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/cb_remember_me",
+        "appium_id": "id:com.example.mobile_app:id/cb_remember_me",
+        "by_text": "xpath=//*[@text='Se souvenir de moi']",
+        "by_text_contains": "xpath=//*[contains(@text,'Se souvenir de moi')]"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "login_button",
+      "class": "",
+      "resource_id": "com.example.mobile_app:id/btn_login",
+      "short_id": "btn_login",
+      "text": "Se connecter",
+      "content_desc": "",
+      "bounds": "[100,620][980,740]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/btn_login",
+        "appium_id": "id:com.example.mobile_app:id/btn_login",
+        "by_text": "xpath=//*[@text='Se connecter']",
+        "by_text_contains": "xpath=//*[contains(@text,'Se connecter')]"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "clickable_element",
+      "class": "",
+      "resource_id": "com.example.mobile_app:id/tv_forgot_password",
+      "short_id": "tv_forgot_password",
+      "text": "Mot de passe oublié ?",
+      "content_desc": "",
+      "bounds": "[300,780][780,840]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/tv_forgot_password",
+        "appium_id": "id:com.example.mobile_app:id/tv_forgot_password",
+        "by_text": "xpath=//*[@text='Mot de passe oublié ?']",
+        "by_text_contains": "xpath=//*[contains(@text,'Mot de passe oublié ')]"
+      },
+      "locator_quality": "robust"
+    }
+  ],
+  "interactive_summary": [
+    {
+      "type": "clickable_element",
+      "short_id": "edit_username",
+      "resource_id": "com.example.mobile_app:id/edit_username",
+      "text": "",
+      "content_desc": "Champ identifiant",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/edit_username",
+        "appium_id": "id:com.example.mobile_app:id/edit_username",
+        "by_accessibility": "accessibility id=Champ identifiant"
+      }
+    },
+    {
+      "type": "clickable_element",
+      "short_id": "edit_password",
+      "resource_id": "com.example.mobile_app:id/edit_password",
+      "text": "",
+      "content_desc": "Champ mot de passe",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/edit_password",
+        "appium_id": "id:com.example.mobile_app:id/edit_password",
+        "by_accessibility": "accessibility id=Champ mot de passe"
+      }
+    },
+    {
+      "type": "clickable_element",
+      "short_id": "cb_remember_me",
+      "resource_id": "com.example.mobile_app:id/cb_remember_me",
+      "text": "Se souvenir de moi",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/cb_remember_me",
+        "appium_id": "id:com.example.mobile_app:id/cb_remember_me",
+        "by_text": "xpath=//*[@text='Se souvenir de moi']",
+        "by_text_contains": "xpath=//*[contains(@text,'Se souvenir de moi')]"
+      }
+    },
+    {
+      "type": "login_button",
+      "short_id": "btn_login",
+      "resource_id": "com.example.mobile_app:id/btn_login",
+      "text": "Se connecter",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/btn_login",
+        "appium_id": "id:com.example.mobile_app:id/btn_login",
+        "by_text": "xpath=//*[@text='Se connecter']",
+        "by_text_contains": "xpath=//*[contains(@text,'Se connecter')]"
+      }
+    },
+    {
+      "type": "clickable_element",
+      "short_id": "tv_forgot_password",
+      "resource_id": "com.example.mobile_app:id/tv_forgot_password",
+      "text": "Mot de passe oublié ?",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "robust",
+      "locators": {
+        "by_id": "id=com.example.mobile_app:id/tv_forgot_password",
+        "appium_id": "id:com.example.mobile_app:id/tv_forgot_password",
+        "by_text": "xpath=//*[@text='Mot de passe oublié ?']",
+        "by_text_contains": "xpath=//*[contains(@text,'Mot de passe oublié ')]"
+      }
+    }
+  ],
+  "locator_stats": {
+    "robust": 7,
+    "fragile": 0,
+    "missing": 0,
+    "coverage_percent": 100.0
+  },
+  "fragile_locators": [],
+  "missing_locators": []
+}

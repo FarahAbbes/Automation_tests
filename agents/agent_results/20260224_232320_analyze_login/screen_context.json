@@ -1,0 +1,371 @@
+{
+  "success": true,
+  "simulation": false,
+  "page_name": "login",
+  "app_package": "com.example.mobile_app",
+  "app_activity": ".MainActivity",
+  "total_elements": 13,
+  "interactive_elements": 7,
+  "elements": [
+    {
+      "type": "element",
+      "class": "android.widget.FrameLayout",
+      "resource_id": "android:id/content",
+      "short_id": "content",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[0,0][1080,2270]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 3,
+      "locators": {
+        "by_id": "id=android:id/content",
+        "appium_id": "id:android:id/content"
+      },
+      "locator_quality": "robust"
+    },
+    {
+      "type": "clickable_element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[0,103][154,323]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {},
+      "locator_quality": "missing"
+    },
+    {
+      "type": "element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Welcome Back",
+      "bounds": "[168,653][912,788]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Welcome Back"
+      },
+      "locator_quality": "missing"
+    },
+    {
+      "type": "element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Sign in to continue",
+      "bounds": "[325,810][755,873]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Sign in to continue"
+      },
+      "locator_quality": "missing"
+    },
+    {
+      "type": "element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Email Address",
+      "bounds": "[66,983][354,1038]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Email Address"
+      },
+      "locator_quality": "missing"
+    },
+    {
+      "type": "input_field",
+      "class": "android.widget.EditText",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[66,1060][1014,1214]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {},
+      "locator_quality": "missing"
+    },
+    {
+      "type": "element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Password",
+      "bounds": "[66,1269][260,1324]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Password"
+      },
+      "locator_quality": "missing"
+    },
+    {
+      "type": "input_field",
+      "class": "android.widget.EditText",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[66,1346][1014,1500]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {},
+      "locator_quality": "missing"
+    },
+    {
+      "type": "button",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "",
+      "bounds": "[882,1357][1014,1489]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 12,
+      "locators": {},
+      "locator_quality": "missing"
+    },
+    {
+      "type": "forgot_password_link",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Forgot Password?",
+      "bounds": "[603,1528][1014,1660]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Forgot Password?"
+      },
+      "locator_quality": "missing"
+    },
+    {
+      "type": "button",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Sign In",
+      "bounds": "[66,1770][1014,1924]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Sign In"
+      },
+      "locator_quality": "missing"
+    },
+    {
+      "type": "element",
+      "class": "android.view.View",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "New User? ",
+      "bounds": "[264,2146][509,2218]",
+      "clickable": false,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=New User? "
+      },
+      "locator_quality": "missing"
+    },
+    {
+      "type": "button",
+      "class": "android.widget.Button",
+      "resource_id": "",
+      "short_id": "",
+      "text": "",
+      "content_desc": "Create Account",
+      "bounds": "[484,2146][814,2218]",
+      "clickable": true,
+      "enabled": true,
+      "depth": 11,
+      "locators": {
+        "by_accessibility": "accessibility id=Create Account"
+      },
+      "locator_quality": "missing"
+    }
+  ],
+  "interactive_summary": [
+    {
+      "type": "clickable_element",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {}
+    },
+    {
+      "type": "input_field",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {}
+    },
+    {
+      "type": "input_field",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {}
+    },
+    {
+      "type": "button",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {}
+    },
+    {
+      "type": "forgot_password_link",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "Forgot Password?",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {
+        "by_accessibility": "accessibility id=Forgot Password?"
+      }
+    },
+    {
+      "type": "button",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "Sign In",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {
+        "by_accessibility": "accessibility id=Sign In"
+      }
+    },
+    {
+      "type": "button",
+      "short_id": "",
+      "resource_id": "",
+      "text": "",
+      "content_desc": "Create Account",
+      "enabled": true,
+      "locator_quality": "missing",
+      "locators": {
+        "by_accessibility": "accessibility id=Create Account"
+      }
+    }
+  ],
+  "locator_stats": {
+    "robust": 1,
+    "fragile": 0,
+    "missing": 12,
+    "coverage_percent": 7.7
+  },
+  "fragile_locators": [],
+  "missing_locators": [
+    {
+      "class": "android.view.View",
+      "bounds": "[0,103][154,323]",
+      "type": "clickable_element",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.view.View",
+      "bounds": "[168,653][912,788]",
+      "type": "element",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.view.View",
+      "bounds": "[325,810][755,873]",
+      "type": "element",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.view.View",
+      "bounds": "[66,983][354,1038]",
+      "type": "element",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.widget.EditText",
+      "bounds": "[66,1060][1014,1214]",
+      "type": "input_field",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.view.View",
+      "bounds": "[66,1269][260,1324]",
+      "type": "element",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.widget.EditText",
+      "bounds": "[66,1346][1014,1500]",
+      "type": "input_field",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.widget.Button",
+      "bounds": "[882,1357][1014,1489]",
+      "type": "button",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.widget.Button",
+      "bounds": "[603,1528][1014,1660]",
+      "type": "forgot_password_link",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.widget.Button",
+      "bounds": "[66,1770][1014,1924]",
+      "type": "button",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.view.View",
+      "bounds": "[264,2146][509,2218]",
+      "type": "element",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    },
+    {
+      "class": "android.widget.Button",
+      "bounds": "[484,2146][814,2218]",
+      "type": "button",
+      "reason": "Aucun resource-id, text ou content-desc disponible"
+    }
+  ]
+}
